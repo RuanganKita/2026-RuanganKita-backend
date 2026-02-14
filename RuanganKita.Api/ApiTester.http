@@ -1,0 +1,99 @@
+@baseUrl = http://localhost:5130
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiRGVjaGl2aWVsIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJpc1ZlcmlmaWVkIjoidHJ1ZSIsImV4cCI6MTc3MTA4ODg2OSwiaXNzIjoiUnVhbmdhbktpdGEiLCJhdWQiOiJSdWFuZ2FuS2l0YVVzZXJzIn0.A9NAwnTZERrw717gRj8PUt_lUws_1OCHnuNPd64uNr0
+GET {{baseUrl}}/rooms
+Authorization: Bearer {{token}}
+
+### Get Room By Id
+GET {{baseUrl}}/rooms/2
+Authorization: Bearer {{token}}
+
+### Create Room
+POST {{baseUrl}}/rooms
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "A102",
+  "building": "D4",
+  "capacity": 30,
+  "availableFrom": "08:00:00",
+  "availableTo": "16:00:00"
+}
+
+### Update Room
+PUT {{baseUrl}}/rooms/2
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Lab Komputer 1 Updated",
+  "building": "Gedung A",
+  "capacity": 45,
+  "availableFrom": "09:00:00",
+  "availableTo": "17:00:00"
+}
+
+### Delete Room
+DELETE {{baseUrl}}/rooms/3
+Authorization: Bearer {{token}}
+
+### CREATE USER
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "Faris",
+  "password": "Tahubulat1",
+  "role": "User"
+}
+
+### CREATE Admin
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "Dechiviel",
+  "password": "Tahubulat1",
+  "role": "Admin"
+}
+
+### Login USER
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "Faris",
+  "password": "Tahubulat1"
+}
+
+### Login Admin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "Dechiviel",
+  "password": "Tahubulat1"
+}
+
+### CREATE Admin
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "DechivielJr2",
+  "password": "Tahubulat1",
+  "role": "User"
+}
+
+### Login Admin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "DechivielJr2",
+  "password": "Tahubulat1"
+}
+
+### Verif
+POST {{baseUrl}}/auth/verify/3
+Authorization: Bearer {{token}}
