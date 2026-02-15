@@ -19,6 +19,7 @@ builder.Services.BuildJWT();
 
 builder.Services.AddScoped<AuthServices>();
 builder.Services.AddScoped<RoomServices>();
+builder.Services.AddScoped<ReservationServices>();
 builder.Services.AddValidation();
 
 // APP
@@ -29,5 +30,6 @@ app.UseAuthorization();
 
 app.MapAuthEndpoints();
 app.MapRoomsEndpoints();
+app.MapReservationEndpoints();
 
 app.Run();

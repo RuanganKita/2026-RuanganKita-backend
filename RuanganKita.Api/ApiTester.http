@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:5130
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiRGVjaGl2aWVsIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJpc1ZlcmlmaWVkIjoidHJ1ZSIsImV4cCI6MTc3MTA4ODg2OSwiaXNzIjoiUnVhbmdhbktpdGEiLCJhdWQiOiJSdWFuZ2FuS2l0YVVzZXJzIn0.A9NAwnTZERrw717gRj8PUt_lUws_1OCHnuNPd64uNr0
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiRGVjaGl2aWVsIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJpc1ZlcmlmaWVkIjoidHJ1ZSIsImV4cCI6MTc3MTE0NDUzMCwiaXNzIjoiUnVhbmdhbktpdGEiLCJhdWQiOiJSdWFuZ2FuS2l0YVVzZXJzIn0.Aov0oIost4j6pHWR81uPs8BgQb-3EPggQ1ewiWfpFMI
 GET {{baseUrl}}/rooms
 Authorization: Bearer {{token}}
 
@@ -96,4 +96,49 @@ Content-Type: application/json
 
 ### Verif
 POST {{baseUrl}}/auth/verify/3
+Authorization: Bearer {{token}}
+
+
+
+
+### Create Reservation
+POST {{baseUrl}}/reservations
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "roomId": 1,
+  "userId": 2,
+  "date": "2026-02-15",
+  "startTime": "11:00:00",
+  "endTime": "12:00:00"
+}
+
+### Update Reservation
+PUT {{baseUrl}}/reservations/5
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "date": "2026-02-15",
+  "startTime": "15:00:00",
+  "endTime": "15:10:00",
+  "status": "Pending"
+}
+
+### Delete Reservation
+DELETE {{baseUrl}}/reservations/1
+Authorization: Bearer {{token}}
+
+### Update Reservation Status (Verified Admin Only)
+PUT {{baseUrl}}/reservations/status/2
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "status": "Approved"
+}
+
+### Get Reservation History (All or by User)
+GET {{baseUrl}}/reservations/history?username=Faris
 Authorization: Bearer {{token}}

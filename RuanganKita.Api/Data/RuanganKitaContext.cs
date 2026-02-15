@@ -8,4 +8,5 @@ public class RuanganKitaContext(DbContextOptions<RuanganKitaContext> options) : 
     public DbSet<Room> Rooms => Set<Room>();
     public DbSet<Building> Buildings => Set<Building>();
     public DbSet<User> Users => Set<User>();
+    public DbSet<Reservation> Reservations => Set<Reservation>();
 }

@@ -34,7 +34,7 @@ public class AuthServices
 
         var token = GenerateJwtToken(user);
 
-        return new AuthResponseDto(token, user.Username, user.Role);
+        return new AuthResponseDto(token, user.Id, user.Username, user.Role);
     }
 
     public async Task<bool> RegisterAsync(RegisterDto dto)
@@ -83,6 +83,7 @@ public class AuthServices
 
         var claims = new[]
         {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.Username),
             new Claim(ClaimTypes.Role, user.Role),
             new Claim("isVerified", user.IsVerified.ToString().ToLower())
