@@ -18,7 +18,8 @@ builder.Services.AddScoped<AuthServices>();
 builder.Services.AddScoped<RoomServices>();
 builder.Services.AddScoped<ReservationServices>();
 builder.Services.AddScoped<UserServices>();
-builder.Services.AddValidation();
+builder.Services.AddControllers();
+builder.Services.AddHealthChecks();
 
 
 var app = builder.Build();
@@ -26,6 +27,7 @@ var app = builder.Build();
 app.UseCors("FrontendPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapHealthChecks("/health");
 app.MapAuthEndpoints();
 app.MapRoomsEndpoints();
 app.MapReservationEndpoints();
