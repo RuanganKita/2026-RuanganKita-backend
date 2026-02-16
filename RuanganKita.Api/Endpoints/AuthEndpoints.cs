@@ -16,10 +16,10 @@ public static class AuthEndpoints
         {
             var result = await service.RegisterAsync(dto);
 
-            if (!result)
-                return Results.BadRequest("Username already exists");
+            if (result == null)
+                return Results.Unauthorized();
 
-            return Results.Ok("User registered");
+            return Results.Ok(result);
         });
 
         group.MapPost("/login", async (
