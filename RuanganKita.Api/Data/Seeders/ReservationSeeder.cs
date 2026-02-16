@@ -29,16 +29,25 @@ public class ReservationSeeder : ISeeder
             return;
         }
 
-        var today = DateTime.UtcNow.Date;
+        var wibOffset = TimeSpan.FromHours(7);
+        var nowUtc = DateTime.UtcNow;
+        var nowWib = nowUtc.Add(wibOffset);
+        var todayWib = DateOnly.FromDateTime(nowWib);
+        
+        DateTime CreateUtcDateTime(DateOnly dateWib, int hourWib)
+        {
+            var dateTimeWib = dateWib.ToDateTime(new TimeOnly(hourWib, 0));
+            return DateTime.SpecifyKind(dateTimeWib.Subtract(wibOffset), DateTimeKind.Utc);
+        }
+
         var reservations = new List<Reservation>
         {
-            // Reservasi hari ini
             new Reservation
             {
                 RoomId = rooms[0].Id,
                 UserId = users[1].Id,
-                StartTime = DateTime.SpecifyKind(today.AddHours(9), DateTimeKind.Utc),
-                EndTime = DateTime.SpecifyKind(today.AddHours(11), DateTimeKind.Utc),
+                StartTime = CreateUtcDateTime(todayWib, 9),
+                EndTime = CreateUtcDateTime(todayWib, 11),
                 Status = "Approved",
                 CreatedAt = DateTime.UtcNow
             },
@@ -46,8 +55,8 @@ public class ReservationSeeder : ISeeder
             {
                 RoomId = rooms[0].Id,
                 UserId = users[2].Id,
-                StartTime = DateTime.SpecifyKind(today.AddHours(13), DateTimeKind.Utc),
-                EndTime = DateTime.SpecifyKind(today.AddHours(15), DateTimeKind.Utc),
+                StartTime = CreateUtcDateTime(todayWib, 13),
+                EndTime = CreateUtcDateTime(todayWib, 15),   
                 Status = "Approved",
                 CreatedAt = DateTime.UtcNow
             },
@@ -55,19 +64,18 @@ public class ReservationSeeder : ISeeder
             {
                 RoomId = rooms[1].Id,
                 UserId = users[3].Id,
-                StartTime = DateTime.SpecifyKind(today.AddHours(10), DateTimeKind.Utc),
-                EndTime = DateTime.SpecifyKind(today.AddHours(12), DateTimeKind.Utc),
+                StartTime = CreateUtcDateTime(todayWib, 10), 
+                EndTime = CreateUtcDateTime(todayWib, 12),    
                 Status = "Pending",
                 CreatedAt = DateTime.UtcNow
             },
             
-            // Reservasi besok
             new Reservation
             {
                 RoomId = rooms[2].Id,
                 UserId = users[1].Id,
-                StartTime = DateTime.SpecifyKind(today.AddDays(1).AddHours(14), DateTimeKind.Utc),
-                EndTime = DateTime.SpecifyKind(today.AddDays(1).AddHours(16), DateTimeKind.Utc),
+                StartTime = CreateUtcDateTime(todayWib.AddDays(1), 14),  
+                EndTime = CreateUtcDateTime(todayWib.AddDays(1), 16),  
                 Status = "Approved",
                 CreatedAt = DateTime.UtcNow
             },
@@ -75,19 +83,18 @@ public class ReservationSeeder : ISeeder
             {
                 RoomId = rooms[3].Id,
                 UserId = users[2].Id,
-                StartTime = DateTime.SpecifyKind(today.AddDays(1).AddHours(9), DateTimeKind.Utc),
-                EndTime = DateTime.SpecifyKind(today.AddDays(1).AddHours(11), DateTimeKind.Utc),
+                StartTime = CreateUtcDateTime(todayWib.AddDays(1), 9),  
+                EndTime = CreateUtcDateTime(todayWib.AddDays(1), 11), 
                 Status = "Approved",
                 CreatedAt = DateTime.UtcNow
             },
             
-            // Reservasi kemarin (history)
             new Reservation
             {
                 RoomId = rooms[0].Id,
                 UserId = users[1].Id,
-                StartTime = DateTime.SpecifyKind(today.AddDays(-1).AddHours(10), DateTimeKind.Utc),
-                EndTime = DateTime.SpecifyKind(today.AddDays(-1).AddHours(12), DateTimeKind.Utc),
+                StartTime = CreateUtcDateTime(todayWib.AddDays(-1), 10),
+                EndTime = CreateUtcDateTime(todayWib.AddDays(-1), 12),   
                 Status = "Approved",
                 CreatedAt = DateTime.UtcNow.AddDays(-2)
             },
@@ -95,8 +102,8 @@ public class ReservationSeeder : ISeeder
             {
                 RoomId = rooms[1].Id,
                 UserId = users[2].Id,
-                StartTime = DateTime.SpecifyKind(today.AddDays(-2).AddHours(14), DateTimeKind.Utc),
-                EndTime = DateTime.SpecifyKind(today.AddDays(-2).AddHours(16), DateTimeKind.Utc),
+                StartTime = CreateUtcDateTime(todayWib.AddDays(-2), 14), 
+                EndTime = CreateUtcDateTime(todayWib.AddDays(-2), 16),   
                 Status = "Rejected",
                 CreatedAt = DateTime.UtcNow.AddDays(-3)
             }

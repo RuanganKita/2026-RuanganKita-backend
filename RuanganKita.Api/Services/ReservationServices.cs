@@ -71,8 +71,12 @@ public class ReservationServices
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == username);
         if (user == null) return (false, "User not found", null);
 
-        var startDateTime = DateTime.SpecifyKind(dto.Date.ToDateTime(dto.StartTime), DateTimeKind.Utc);
-        var endDateTime = DateTime.SpecifyKind(dto.Date.ToDateTime(dto.EndTime), DateTimeKind.Utc);
+        // Convert WIB (UTC+7) to UTC for storage
+        var wibOffset = TimeSpan.FromHours(7);
+        var startDateTime = dto.Date.ToDateTime(dto.StartTime).Subtract(wibOffset);
+        var endDateTime = dto.Date.ToDateTime(dto.EndTime).Subtract(wibOffset);
+        startDateTime = DateTime.SpecifyKind(startDateTime, DateTimeKind.Utc);
+        endDateTime = DateTime.SpecifyKind(endDateTime, DateTimeKind.Utc);
 
         if (dto.StartTime < room.AvailableFrom || dto.EndTime > room.AvailableTo)
             return (false, $"Reservation time must be between {room.AvailableFrom} and {room.AvailableTo}", null);
@@ -138,8 +142,12 @@ public class ReservationServices
         if (res.Status == "Approved")
             return (false, "Cannot update a reservation that is already approved", null);
 
-        var startDateTime = DateTime.SpecifyKind(dto.Date.ToDateTime(dto.StartTime), DateTimeKind.Utc);
-        var endDateTime = DateTime.SpecifyKind(dto.Date.ToDateTime(dto.EndTime), DateTimeKind.Utc);
+        // Convert WIB (UTC+7) to UTC for storage
+        var wibOffset = TimeSpan.FromHours(7);
+        var startDateTime = dto.Date.ToDateTime(dto.StartTime).Subtract(wibOffset);
+        var endDateTime = dto.Date.ToDateTime(dto.EndTime).Subtract(wibOffset);
+        startDateTime = DateTime.SpecifyKind(startDateTime, DateTimeKind.Utc);
+        endDateTime = DateTime.SpecifyKind(endDateTime, DateTimeKind.Utc);
 
         if (dto.StartTime < res.Room.AvailableFrom || dto.EndTime > res.Room.AvailableTo)
             return (false, $"Reservation time must be between {res.Room.AvailableFrom} and {res.Room.AvailableTo}", null);
@@ -264,8 +272,13 @@ public class ReservationServices
     // GET RESERVED HOURS
     public async Task<ReservedHoursResponseDto> GetReservedHoursAsync(DateOnly date, int roomId)
     {
-        var startOfDay = date.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc);
-        var endOfDay = date.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc);
+        // Convert WIB (UTC+7) date to UTC range for querying
+        var wibOffset = TimeSpan.FromHours(7);
+        var startOfDayWib = date.ToDateTime(TimeOnly.MinValue);
+        var endOfDayWib = date.ToDateTime(TimeOnly.MaxValue);
+        
+        var startOfDay = DateTime.SpecifyKind(startOfDayWib.Subtract(wibOffset), DateTimeKind.Utc);
+        var endOfDay = DateTime.SpecifyKind(endOfDayWib.Subtract(wibOffset), DateTimeKind.Utc);
 
         var reservations = await _db.Reservations
             .Where(r => r.RoomId == roomId &&
@@ -273,12 +286,14 @@ public class ReservationServices
                         r.StartTime >= startOfDay &&
                         r.EndTime <= endOfDay)
             .OrderBy(r => r.StartTime)
-            .Select(r => new ReservedHourRangeDto(
-                TimeOnly.FromDateTime(r.StartTime),
-                TimeOnly.FromDateTime(r.EndTime)
-            ))
             .ToListAsync();
 
-        return new ReservedHoursResponseDto(date, roomId, reservations);
+        // Convert UTC times back to WIB for response
+        var reservedHours = reservations.Select(r => new ReservedHourRangeDto(
+            TimeOnly.FromDateTime(r.StartTime.Add(wibOffset)),
+            TimeOnly.FromDateTime(r.EndTime.Add(wibOffset))
+        )).ToList();
+
+        return new ReservedHoursResponseDto(date, roomId, reservedHours);
     }
 }
