@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace RuanganKita.Api.Helper;
 
@@ -13,6 +12,7 @@ public static class AuthHelper
         var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
         var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
         var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
+        var frontendPort = Environment.GetEnvironmentVariable("FRONTEND_PORT");
 
         if (string.IsNullOrWhiteSpace(jwtKey))
             throw new Exception("JWT_KEY is not set.");
@@ -22,6 +22,19 @@ public static class AuthHelper
 
         if (string.IsNullOrWhiteSpace(jwtAudience))
             throw new Exception("JWT_AUDIENCE is not set.");
+
+        if (string.IsNullOrWhiteSpace(frontendPort))
+            throw new Exception("FRONTEND_PORT is not set.");
+
+        services.AddCors(options =>
+        {
+            options.AddPolicy("FrontendPolicy", policy =>
+            {
+                policy.WithOrigins(frontendPort)
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
+        });
 
         services.AddAuthentication(options =>
         {

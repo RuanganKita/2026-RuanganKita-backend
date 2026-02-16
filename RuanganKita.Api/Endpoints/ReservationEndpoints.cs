@@ -70,6 +70,13 @@ public static class ReservationEndpoints
         })
         .RequireAuthorization(new AuthorizeAttribute { Roles = "Admin,User" });
 
+        group.MapPost("/reserved-hours", async (GetReservedHoursDto dto, ReservationServices service) =>
+        {
+            var result = await service.GetReservedHoursAsync(dto.Date, dto.RoomId);
+            return Results.Ok(result);
+        })
+        .RequireAuthorization(new AuthorizeAttribute { Roles = "Admin,User" });
+
         return group;
     }
 }

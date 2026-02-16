@@ -36,14 +36,13 @@ public class AuthServices
 
         return new AuthResponseDto(token, user.Id, user.Username, user.Role);
     }
-
-    public async Task<bool> RegisterAsync(RegisterDto dto)
+    public async Task<AuthResponseDto?> RegisterAsync(RegisterDto dto)
     {
         var exists = await _db.Users
             .AnyAsync(u => u.Username == dto.Username);
 
         if (exists)
-            return false;
+            return null;
 
         var role = dto.Role == "Admin" ? "Admin" : "User";
 
@@ -58,9 +57,10 @@ public class AuthServices
         _db.Users.Add(user);
         await _db.SaveChangesAsync();
 
-        return true;
+        var token = GenerateJwtToken(user);
+        
+        return new AuthResponseDto(token, user.Id, user.Username, user.Role);
     }
-
 
     private string GenerateJwtToken(User user)
     {

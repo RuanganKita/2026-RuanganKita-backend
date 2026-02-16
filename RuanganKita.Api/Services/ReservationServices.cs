@@ -260,4 +260,25 @@ public class ReservationServices
             ))
             .ToListAsync();
     }
+
+    // GET RESERVED HOURS
+    public async Task<ReservedHoursResponseDto> GetReservedHoursAsync(DateOnly date, int roomId)
+    {
+        var startOfDay = date.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc);
+        var endOfDay = date.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc);
+
+        var reservations = await _db.Reservations
+            .Where(r => r.RoomId == roomId &&
+                        r.Status == "Approved" &&
+                        r.StartTime >= startOfDay &&
+                        r.EndTime <= endOfDay)
+            .OrderBy(r => r.StartTime)
+            .Select(r => new ReservedHourRangeDto(
+                TimeOnly.FromDateTime(r.StartTime),
+                TimeOnly.FromDateTime(r.EndTime)
+            ))
+            .ToListAsync();
+
+        return new ReservedHoursResponseDto(date, roomId, reservations);
+    }
 }

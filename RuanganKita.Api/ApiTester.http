@@ -52,9 +52,9 @@ POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
 {
-  "username": "Dechiviel",
+  "username": "Faristes2",
   "password": "Tahubulat1",
-  "role": "Admin"
+  "role": "User"
 }
 
 ### Login USER
@@ -142,3 +142,12 @@ Authorization: Bearer {{token}}
 ### Get Reservation History (All or by User)
 GET {{baseUrl}}/reservations/history?username=Faris
 Authorization: Bearer {{token}}
+
+### Get Reserved Hours for a Room on a Date
+POST {{baseUrl}}/reservations/reserved-hours
+Content-Type: application/json
+
+{
+  "date": "2026-02-15",
+  "roomId": 1
+}

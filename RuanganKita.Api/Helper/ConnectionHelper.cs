@@ -1,5 +1,3 @@
-using DotNetEnv;
-
 namespace RuanganKita.Api.Helper;
 
 public static class ConnectionHelper
